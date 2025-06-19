@@ -1,18 +1,17 @@
 package figuras;
 
-public class Circulo extends figuras.Figura {
-
-    public Circulo(double valor1){
+public class Circulo extends Figura {
+    public Circulo(double valor1) {
         super(valor1);
     }
 
     @Override
-    public double getArea(){
-        return Math.PI*Math.pow(this.valor1, 2);
+    public double getArea() {
+        return Math.PI * Math.pow(getValor1(), 2);
     }
 
     @Override
-    public double getPerimetro(){
-        return 2*Math.PI*this.valor1;
+    public double getPerimetro() {
+        return 2 * Math.PI * getValor1();
     }
 }

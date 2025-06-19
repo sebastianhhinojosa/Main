@@ -1,7 +1,6 @@
 package ui;
 
-import figuras.CirculoDibujable;
-import figuras.CuadradoDibujable;
+import figuras.*;
 import java.util.Scanner;
 
 public class InterfazUsuario {
@@ -14,18 +13,26 @@ public class InterfazUsuario {
     public Object[] obtenerDatosFiguras() {
         try {
             System.out.println("Ingrese los datos para el círculo:");
-            double radioCirculo = obtenerDoubleValido("Radio del círculo: ");
+            double radio = obtenerDoubleValido("Radio del círculo: ");
             int xCirculo = obtenerIntValido("Coordenada X del centro: ");
             int yCirculo = obtenerIntValido("Coordenada Y del centro: ");
 
-            System.out.println("\nIngrese los datos para el cuadrado:");
-            double ladoCuadrado = obtenerDoubleValido("Lado del cuadrado: ");
-            int xCuadrado = obtenerIntValido("Coordenada X de la esquina superior izquierda: ");
-            int yCuadrado = obtenerIntValido("Coordenada Y de la esquina superior izquierda: ");
+            System.out.println("\nIngrese los datos para el rectángulo:");
+            double baseRect = obtenerDoubleValido("Base del rectángulo: ");
+            double alturaRect = obtenerDoubleValido("Altura del rectángulo: ");
+            int xRect = obtenerIntValido("Coordenada X de la esquina superior izquierda: ");
+            int yRect = obtenerIntValido("Coordenada Y de la esquina superior izquierda: ");
+
+            System.out.println("\nIngrese los datos para el triángulo:");
+            double baseTriang = obtenerDoubleValido("Base del triángulo: ");
+            double alturaTriang = obtenerDoubleValido("Altura del triángulo: ");
+            int xTriang = obtenerIntValido("Coordenada X del vértice superior: ");
+            int yTriang = obtenerIntValido("Coordenada Y del vértice superior: ");
 
             return new Object[] {
-                    new CirculoDibujable(radioCirculo, xCirculo, yCirculo),
-                    new CuadradoDibujable(ladoCuadrado, xCuadrado, yCuadrado)
+                    new CirculoDibujable(radio, xCirculo, yCirculo),
+                    new RectanguloDibujable(baseRect, alturaRect, xRect, yRect),
+                    new TrianguloDibujable(baseTriang, alturaTriang, xTriang, yTriang)
             };
 
         } finally {

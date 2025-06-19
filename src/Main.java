@@ -1,7 +1,5 @@
-import figuras.CirculoDibujable;
-import figuras.CuadradoDibujable;
-import ui.InterfazUsuario;
-import ui.VentanaDibujo;
+import figuras.*;
+import ui.*;
 
 public class Main {
     public static void main(String[] args) {
@@ -9,14 +7,15 @@ public class Main {
         Object[] datosFiguras = interfaz.obtenerDatosFiguras();
 
         CirculoDibujable circulo = (CirculoDibujable) datosFiguras[0];
-        CuadradoDibujable cuadrado = (CuadradoDibujable) datosFiguras[1];
+        RectanguloDibujable rectangulo = (RectanguloDibujable) datosFiguras[1];
+        TrianguloDibujable triangulo = (TrianguloDibujable) datosFiguras[2];
 
-        System.out.println("\nEl área del círculo es: " + circulo.getArea());
-        System.out.println("El perímetro del círculo es: " + circulo.getPerimetro());
-        System.out.println("El área del cuadrado es: " + cuadrado.getArea());
-        System.out.println("El perímetro del cuadrado es: " + cuadrado.getPerimetro());
+        System.out.println("\nRESULTADOS:");
+        System.out.printf("Círculo - Área: %.2f, Perímetro: %.2f%n", circulo.getArea(), circulo.getPerimetro());
+        System.out.printf("Rectángulo - Área: %.2f, Perímetro: %.2f%n", rectangulo.getArea(), rectangulo.getPerimetro());
+        System.out.printf("Triángulo - Área: %.2f, Perímetro: %.2f%n", triangulo.getArea(), triangulo.getPerimetro());
 
-        VentanaDibujo ventana = new VentanaDibujo(circulo, cuadrado);
+        VentanaDibujo ventana = new VentanaDibujo(circulo, rectangulo, triangulo);
         ventana.mostrar();
     }
 }

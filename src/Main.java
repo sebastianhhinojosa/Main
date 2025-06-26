@@ -1,44 +1,141 @@
+import java.util.Scanner;
+import java.util.List;
+
 public class Main {
     public static void main(String[] args) {
+        Scanner scanner = new Scanner(System.in);
         Club club = new Club();
 
-        club.afiliarSocio("123", "Juan Pérez", Tipo.REGULAR);
-        club.afiliarSocio("456", "Ana Torres", Tipo.VIP);
-        club.afiliarSocio("789", "Carlos Ruiz", Tipo.VIP);
-        club.afiliarSocio("321", "María López", Tipo.VIP);
-        club.afiliarSocio("999", "Extra VIP", Tipo.VIP);
+        boolean salir = false;
 
-        club.agregarAutorizadoSocio("123", "Luis Amigo");
-        club.agregarAutorizadoSocio("456", "Sofía Hermana");
+        while (!salir) {
+            System.out.println("\n==== MENÚ DEL CLUB ====");
+            System.out.println("1. Afiliar socio");
+            System.out.println("2. Agregar autorizado a un socio");
+            System.out.println("3. Registrar consumo");
+            System.out.println("4. Ver facturas de un socio");
+            System.out.println("5. Pagar factura");
+            System.out.println("6. Aumentar fondos de un socio");
+            System.out.println("7. Ver total de consumos de un socio");
+            System.out.println("8. Ver autorizados de un socio");
+            System.out.println("9. Eliminar autorizado de un socio");
+            System.out.println("10. Ver si se puede eliminar un socio");
+            System.out.println("11. Salir");
+            System.out.print("Seleccione una opción: ");
 
-        club.registrarConsumo("123", "Juan Pérez", "Comida", 20000);
-        club.registrarConsumo("123", "Luis Amigo", "Piscina", 10000);
-        club.registrarConsumo("456", "Sofía Hermana", "Spa", 50000);
-        club.registrarConsumo("456", "No Autorizado", "Bar", 20000);
+            int opcion = Integer.parseInt(scanner.nextLine());
 
-        System.out.println("\n Facturas de Juan Pérez:");
-        for (Factura f : club.darFacturasSocio("123")) {
-            System.out.println(f);
+            switch (opcion) {
+                case 1:
+                    System.out.print("Cédula: ");
+                    String cedula = scanner.nextLine();
+                    System.out.print("Nombre: ");
+                    String nombre = scanner.nextLine();
+                    System.out.print("Tipo (REGULAR/VIP): ");
+                    String tipoStr = scanner.nextLine();
+                    Tipo tipo = tipoStr.equalsIgnoreCase("VIP") ? Tipo.VIP : Tipo.REGULAR;
+                    club.afiliarSocio(cedula, nombre, tipo);
+                    System.out.println("Socio afiliado.");
+                    break;
 
-            club.pagarFacturaSocio("123", 0);
+                case 2:
+                    System.out.print("Cédula del socio: ");
+                    String cedulaAut = scanner.nextLine();
+                    System.out.print("Nombre del autorizado: ");
+                    String nombreAut = scanner.nextLine();
+                    club.agregarAutorizadoSocio(cedulaAut, nombreAut);
+                    System.out.println("Autorizado agregado.");
+                    break;
 
-            double total123 = club.darValorTotalConsumos("123");
-            System.out.println("\n Total de consumos de Juan Pérez: $" + total123);
+                case 3:
+                    System.out.print("Cédula del socio: ");
+                    String cedulaCons = scanner.nextLine();
+                    System.out.print("Nombre de quien consume: ");
+                    String nombreCons = scanner.nextLine();
+                    System.out.print("Descripción del consumo: ");
+                    String desc = scanner.nextLine();
+                    System.out.print("Valor: ");
+                    double valor = Double.parseDouble(scanner.nextLine());
+                    club.registrarConsumo(cedulaCons, nombreCons, desc, valor);
+                    break;
 
-            club.aumentarFondosSocio("123", 200000);
-            System.out.println("Fondos de Juan Pérez después de aumentar: $" + club.buscarSocio("123").darFondos());
+                case 4:
+                    System.out.print("Cédula del socio: ");
+                    String cedulaFact = scanner.nextLine();
+                    List<Factura> facturas = club.darFacturasSocio(cedulaFact);
+                    if (facturas.isEmpty()) {
+                        System.out.println("No hay facturas.");
+                    } else {
+                        for (int i = 0; i < facturas.size(); i++) {
+                            System.out.println(i + ": " + facturas.get(i));
+                        }
+                    }
+                    break;
 
-            System.out.println("\n ¿Se puede eliminar '123'? → " + club.sePuedeEliminarSocio("123"));
-            System.out.println(" ¿Se puede eliminar '456'? → " + club.sePuedeEliminarSocio("456"));
-            System.out.println(" ¿Se puede eliminar '000'? → " + club.sePuedeEliminarSocio("000"));
+                case 5:
+                    System.out.print("Cédula del socio: ");
+                    String cedulaPago = scanner.nextLine();
+                    System.out.print("Número de factura a pagar (índice): ");
+                    int numFactura = Integer.parseInt(scanner.nextLine());
+                    club.pagarFacturaSocio(cedulaPago, numFactura);
+                    System.out.println("Factura pagada.");
+                    break;
 
-            club.eliminarAutorizadoSocio("456", "Sofía Hermana");
+                case 6:
+                    System.out.print("Cédula del socio: ");
+                    String cedulaFondos = scanner.nextLine();
+                    System.out.print("Monto a aumentar: ");
+                    double monto = Double.parseDouble(scanner.nextLine());
+                    club.aumentarFondosSocio(cedulaFondos, monto);
+                    System.out.println("Fondos aumentados.");
+                    break;
 
-            club.eliminarAutorizadoSocio("123", "Luis Amigo");
+                case 7:
+                    System.out.print("Cédula del socio: ");
+                    String cedulaTotal = scanner.nextLine();
+                    double total = club.darValorTotalConsumos(cedulaTotal);
+                    System.out.println("Total consumos: $" + total);
+                    break;
 
-            System.out.println("\n Autorizados de Juan Pérez:");
-            for (String a : club.darAutorizadosSocio("123")) {
-                System.out.println(" - " + a);
+                case 8:
+                    System.out.print("Cédula del socio: ");
+                    String cedulaVerAut = scanner.nextLine();
+                    List<String> autorizados = club.darAutorizadosSocio(cedulaVerAut);
+                    if (autorizados.isEmpty()) {
+                        System.out.println("No hay autorizados.");
+                    } else {
+                        for (String aut : autorizados) {
+                            System.out.println(" - " + aut);
+                        }
+                    }
+                    break;
+
+                case 9:
+                    System.out.print("Cédula del socio: ");
+                    String cedulaElimAut = scanner.nextLine();
+                    System.out.print("Nombre del autorizado a eliminar: ");
+                    String nombreElim = scanner.nextLine();
+                    club.eliminarAutorizadoSocio(cedulaElimAut, nombreElim);
+                    System.out.println("Autorizado eliminado.");
+                    break;
+
+                case 10:
+                    System.out.print("Cédula del socio: ");
+                    String cedulaElim = scanner.nextLine();
+                    boolean puedeEliminar = Boolean.parseBoolean(club.sePuedeEliminarSocio(cedulaElim));
+                    System.out.println("¿Se puede eliminar? → " + puedeEliminar);
+                    break;
+
+                case 11:
+                    salir = true;
+                    System.out.println("Saliendo...");
+                    break;
+
+                default:
+                    System.out.println("Opción inválida.");
             }
         }
-    }}
+
+        scanner.close();
+    }
+}

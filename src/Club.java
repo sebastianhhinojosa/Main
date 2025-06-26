@@ -13,7 +13,7 @@ public class Club {
     }
 
     public void afiliarSocio(String cedula, String nombre, Tipo tipo) {
-        if (buscarSocio(cedula) != null) return;
+        if (buscarSocioOpcional(cedula) != null) return;
 
         int vipCount = contarSociosVIP();
         if (tipo == Tipo.VIP && vipCount >= MAXIMO_VIP) return;
@@ -22,7 +22,16 @@ public class Club {
         socios.add(socio);
     }
 
-    public Socio buscarSocio(String cedula) {
+    public Socio buscarSocio(String cedula) throws SocioNoEncontradoException {
+        for (Socio socio : socios) {
+            if (socio.darCedula().equals(cedula)) {
+                return socio;
+            }
+        }
+        throw new SocioNoEncontradoException("No existe un socio con la cédula: " + cedula);
+    }
+
+    private Socio buscarSocioOpcional(String cedula) {
         for (Socio socio : socios) {
             if (socio.darCedula().equals(cedula)) {
                 return socio;
@@ -39,73 +48,49 @@ public class Club {
         return count;
     }
 
-    public ArrayList<String> darAutorizadosSocio(String cedula) {
-        Socio socio = buscarSocio(cedula);
-        if (socio != null) {
-            return socio.darAutorizados();
-        }
-        return new ArrayList<>();
+    public ArrayList<String> darAutorizadosSocio(String cedula) throws SocioNoEncontradoException {
+        return buscarSocio(cedula).darAutorizados();
     }
 
-    public void agregarAutorizadoSocio(String cedula, String nombreAutorizado) {
-        Socio socio = buscarSocio(cedula);
-        if (socio != null) {
-            socio.agregarAutorizado(nombreAutorizado);
-        }
+    public void agregarAutorizadoSocio(String cedula, String nombreAutorizado)
+            throws SocioNoEncontradoException {
+        buscarSocio(cedula).agregarAutorizado(nombreAutorizado);
     }
 
-    public void eliminarAutorizadoSocio(String cedula, String nombreAutorizado) {
-        Socio socio = buscarSocio(cedula);
-        if (socio != null) {
-            socio.eliminarAutorizado(nombreAutorizado);
-        }
+    public void eliminarAutorizadoSocio(String cedula, String nombreAutorizado)
+            throws SocioNoEncontradoException {
+        buscarSocio(cedula).eliminarAutorizado(nombreAutorizado);
     }
 
-    public void registrarConsumo(String cedula, String nombre, String concepto, double valor) {
-        Socio socio = buscarSocio(cedula);
-        if (socio != null) {
-            socio.registrarConsumo(nombre, concepto, valor);
-        }
+    public void registrarConsumo(String cedula, String nombre, String concepto, double valor)
+            throws SocioNoEncontradoException, AutorizadoNoValidoException, FondosInsuficientesException {
+        buscarSocio(cedula).registrarConsumo(nombre, concepto, valor);
     }
 
-    public ArrayList<Factura> darFacturasSocio(String cedula) {
-        Socio socio = buscarSocio(cedula);
-        if (socio != null) {
-            return socio.darFacturas();
-        }
-        return new ArrayList<>();
+    public ArrayList<Factura> darFacturasSocio(String cedula) throws SocioNoEncontradoException {
+        return buscarSocio(cedula).darFacturas();
     }
 
-    public void pagarFacturaSocio(String cedula, int posicion) {
-        Socio socio = buscarSocio(cedula);
-        if (socio != null) {
-            socio.pagarFactura(posicion);
-        }
+    public void pagarFacturaSocio(String cedula, int posicion)
+            throws SocioNoEncontradoException, FondosInsuficientesException {
+        buscarSocio(cedula).pagarFactura(posicion);
     }
 
-    public void aumentarFondosSocio(String cedula, double valor) {
-        Socio socio = buscarSocio(cedula);
-        if (socio != null) {
-            socio.aumentarFondos(valor);
-        }
+    public void aumentarFondosSocio(String cedula, double valor)
+            throws SocioNoEncontradoException {
+        buscarSocio(cedula).aumentarFondos(valor);
     }
 
-    public double darValorTotalConsumos(String cedula) {
-        Socio socio = buscarSocio(cedula);
-        if (socio == null) {
-            System.out.println("No existe un socio con la cédula: " + cedula);
-            return 0;
-        }
-
+    public double darValorTotalConsumos(String cedula) throws SocioNoEncontradoException {
         double total = 0;
-        for (Factura factura : socio.darFacturas()) {
+        for (Factura factura : buscarSocio(cedula).darFacturas()) {
             total += factura.darValor();
         }
         return total;
     }
 
     public String sePuedeEliminarSocio(String cedula) {
-        Socio socio = buscarSocio(cedula);
+        Socio socio = buscarSocioOpcional(cedula);
         if (socio == null) {
             return "No existe un socio con la cédula: " + cedula;
         }
@@ -119,13 +104,5 @@ public class Club {
             return "No se puede eliminar: el socio tiene más de un autorizado.";
         }
         return "El socio puede ser eliminado.";
-    }
-
-    public String metodo1() {
-        return "Método 1 aún no implementado";
-    }
-
-    public String metodo2() {
-        return "Método 2 aún no implementado";
     }
 }

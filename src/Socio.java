@@ -20,11 +20,7 @@ public class Socio {
         this.facturas = new ArrayList<>();
         this.autorizados = new ArrayList<>();
 
-        if (tipo == Tipo.REGULAR) {
-            this.fondos = FONDOS_INICIALES_REGULARES;
-        } else {
-            this.fondos = FONDOS_INICIALES_VIP;
-        }
+        this.fondos = tipo == Tipo.REGULAR ? FONDOS_INICIALES_REGULARES : FONDOS_INICIALES_VIP;
     }
 
     public String darNombre() {
@@ -71,10 +67,15 @@ public class Socio {
         }
     }
 
-    public void registrarConsumo(String nombreConsumidor, String concepto, double valor) {
-        if (fondos >= valor && (this.nombre.equals(nombreConsumidor) || existeAutorizado(nombreConsumidor))) {
-            facturas.add(new Factura(concepto, nombreConsumidor, valor));
+    public void registrarConsumo(String nombreConsumidor, String concepto, double valor)
+            throws AutorizadoNoValidoException, FondosInsuficientesException {
+        if (!(this.nombre.equals(nombreConsumidor) || existeAutorizado(nombreConsumidor))) {
+            throw new AutorizadoNoValidoException("El consumidor no está autorizado.");
         }
+        if (fondos < valor) {
+            throw new FondosInsuficientesException("Fondos insuficientes para realizar el consumo.");
+        }
+        facturas.add(new Factura(concepto, nombreConsumidor, valor));
     }
 
     public void agregarAutorizado(String nombreAutorizado) {
@@ -96,17 +97,23 @@ public class Socio {
         }
     }
 
-    public void pagarFactura(int posicion) {
+    public void pagarFactura(int posicion) throws FondosInsuficientesException {
         if (posicion >= 0 && posicion < facturas.size()) {
             Factura f = facturas.get(posicion);
-            if (fondos >= f.darValor()) {
-                fondos -= f.darValor();
-                facturas.remove(posicion);
+            if (fondos < f.darValor()) {
+                throw new FondosInsuficientesException("Fondos insuficientes para pagar la factura.");
             }
+            fondos -= f.darValor();
+            facturas.remove(posicion);
         }
+    }
+
+    public boolean puedeConsumir(String nombre) {
+        return this.nombre.equals(nombre) || existeAutorizado(nombre);
     }
 
     public String toString() {
         return "Socio: " + nombre + " (" + cedula + "), tipo: " + tipoSubscripcion + ", fondos: $" + fondos;
     }
 }
+

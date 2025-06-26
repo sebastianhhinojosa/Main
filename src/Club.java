@@ -90,7 +90,6 @@ public class Club {
         }
     }
 
-    // 🔹 MÉTODO 1: Total de consumos de un socio
     public double darValorTotalConsumos(String cedula) {
         Socio socio = buscarSocio(cedula);
         if (socio == null) {
@@ -105,7 +104,6 @@ public class Club {
         return total;
     }
 
-    // 🔹 MÉTODO 2: Verifica si un socio puede ser eliminado
     public String sePuedeEliminarSocio(String cedula) {
         Socio socio = buscarSocio(cedula);
         if (socio == null) {
@@ -123,7 +121,6 @@ public class Club {
         return "El socio puede ser eliminado.";
     }
 
-    // Métodos ficticios adicionales si son necesarios
     public String metodo1() {
         return "Método 1 aún no implementado";
     }
